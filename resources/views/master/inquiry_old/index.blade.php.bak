@@ -1,0 +1,123 @@
+@extends('layouts.app')
+    @section('content')
+    <main class="h-100">
+        <!-- Header -->
+        <header class="header position-fixed">
+            <div class="row">
+                <div class="col-auto">
+                    <a href="javascript:void(0)" target="_self" class="btn btn-light btn-44 menu-btn">
+                        <i class="bi bi-list"></i>
+                    </a>
+                </div>
+                <div class="col align-self-center text-center">
+                    <div class="logo-small">
+                        <img src="{{ asset(config('app.logo', 'assets/img/logo.png')) }}" alt="">
+                        <h5>{{ config('app.title', 'SIAPLAKU') }}</h5>
+                    </div>
+                </div>
+                <div class="col-auto">
+                    <a href="{{ url('notification') }}" target="_self" class="btn btn-light btn-44">
+                        <i class="bi bi-bell"></i>
+                        <span class="count-indicator"></span>
+                    </a>
+                </div>
+            </div>
+        </header>
+        <!-- Header ends -->
+        <!-- main page content -->
+        <div class="main-container container">
+            <!-- wallet balance -->
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-auto">
+                            <!-- <figure class="avatar avatar-44 rounded-10">
+                                <img src="assets/img/user1.jpg" alt="">
+                            </figure> -->
+                        </div>
+                        <div class="col px-0 align-self-center">
+                            <h5 class="mb-0 text-color-theme">{{ $data['judul']}}</h5>
+                            <p class="text-muted size-12"></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card border-0">
+                    <div class="card-body">
+                       <div class="table-responsive">
+                            <table id="allData" class="table nowrap" style="width: 100%">
+                                <thead>
+                                    <tr>
+										
+                                        <th></th>
+										<th>Aksi</th>
+                                        <th>Nama</th>
+                                        <th>No Register</th>
+                                       
+                                        <th>Produk</th>
+                                        <th>No Sertifikat</th>
+                                        <th>Tgl Lahir</th>
+                                        <th>Mulai</th>
+                                        <th>UP</th>
+                                        <th>Premi</th>
+                                       	<th>Asuransi</th> 
+										<th>Cabang</th> 
+                                        <th>AO</th>
+                                        <th>Status</th>
+                                        
+                                    </tr>
+                                </thead>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- main page content ends -->
+    </main>
+</div>
+    @endsection
+    @section('script')
+    <script>
+        function reloadTable() {
+            $('#allData').DataTable().ajax.reload();
+        }
+        $(document).ready(function() {
+            var tablenya = $('#allData').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 'tr'
+                    }
+                },
+                columnDefs: [ {
+                    className: 'control',
+                    orderable: false,
+                    targets:   0
+                } ],
+                order: [ 1, 'asc' ],
+                bLengthChange: true,
+                pagingType: "input",
+                language: {
+                    url: "https://cdn.datatables.net/plug-ins/9dcbecd42ad/i18n/Indonesian.json"
+                },
+                ajax: {
+                    url: '{{ url("/inquiry/data")}}',
+                    data: function (d) {
+                        <?php if (!empty($_GET['q'])) { ?>
+                            d.q = "<?=$_GET['q'];?>";
+                        <?php } ?>
+                        d.search = $('input[type="search"]').val()
+                    },
+                },
+            });
+            $(window).focus(function(){
+                reloadTable();
+            });
+        });
+       
+    </script>
+    
+    
+    @endsection
